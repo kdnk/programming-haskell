@@ -1,6 +1,10 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 
 {-# HLINT ignore "Use splitAt" #-}
+{-# HLINT ignore "Redundant ==" #-}
+{-# HLINT ignore "Redundant if" #-}
+{-# HLINT ignore "Collapse lambdas" #-}
+{-# HLINT ignore "Redundant lambda" #-}
 main :: IO ()
 main = do
   print (halve [1, 2, 3, 4])
@@ -16,6 +20,12 @@ main = do
   print (safetail1 [])
   print (safetail2 [])
   print (safetail3 [])
+
+  print (luhnDouble 3)
+  print (luhnDouble 6)
+
+  print (luhn 1 7 8 4)
+  print (luhn 4 7 8 3)
   --
   print ()
 
@@ -52,6 +62,7 @@ safetail3 (x : xs) = xs
 -- False || True = True
 -- False || False = False
 
+-- 4
 (||) :: Bool -> Bool -> Bool
 False || False = False
 True || True = True
@@ -65,3 +76,41 @@ _ ||| _ = True
 (||||) :: Bool -> Bool -> Bool
 True |||| _ = True
 False |||| b = b
+
+-- 5
+(&&) :: Bool -> Bool -> Bool
+a && b =
+  if a == True
+    then
+      if b == True
+        then True
+        else False
+    else False
+
+-- 6
+(&&&) :: Bool -> Bool -> Bool
+a &&& b =
+  if a == True
+    then b
+    else False
+
+-- 7
+mult :: Int -> Int -> Int -> Int
+mult = \x -> (\y -> (\z -> x * y * z))
+
+-- 8
+-- それぞれを独立した番号だとみなす
+-- 右から数えて偶数番目の数すべてを二倍にする
+-- それぞれの数が9より大きいなら9を引く
+-- すべての数を足し合わせる
+-- 合計が10で割り切れるなら、カードの番号は正しい
+
+luhnDouble :: Int -> Int
+luhnDouble x = if n > 9 then n - 9 else n
+  where
+    n = x * 2
+
+luhn :: Int -> Int -> Int -> Int -> Bool
+luhn a b c d = s `mod` 10 == 0
+  where
+    s = luhnDouble a + b + luhnDouble c + d
