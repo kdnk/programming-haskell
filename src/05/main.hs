@@ -25,6 +25,19 @@ main = do
   print ()
   print (find 'b' [('a', 1), ('b', 2), ('c', 3), ('b', 4)])
 
+  print (zip ['a', 'b', 'c'] [1, 2, 3, 4])
+
+  print (pairs [1, 2, 3, 4])
+  print (sorted [1, 2, 3, 4])
+  print (sorted [1, 3, 2, 4])
+
+  print (positions False [True, False, True, False])
+
+  print (lowers "hellO")
+  print (lowers "hello")
+  print (count 'h' "hello")
+  print (count 'l' "hello")
+
   print ()
 
 concat :: [[a]] -> [a]
@@ -55,3 +68,18 @@ primes n = [x | x <- [2 .. n], prime x]
 
 find :: Eq a => a -> [(a, b)] -> [b]
 find k t = [v | (k', v) <- t, k' == k]
+
+pairs :: [a] -> [(a, a)]
+pairs xs = zip xs (tail xs)
+
+sorted :: Ord a => [a] -> Bool
+sorted xs = and [x <= y | (x, y) <- pairs xs]
+
+positions :: Eq a => a -> [a] -> [Int]
+positions x xs = [i | (x', i) <- zip xs [0 ..], x' == x]
+
+lowers :: String -> Int
+lowers xs = length [x | x <- xs, 'a' <= x && x <= 'z']
+
+count :: Char -> String -> Int
+count x xs = length [x | x' <- xs, x == x']
