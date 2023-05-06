@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 
 {-# HLINT ignore "Use foldr" #-}
-import Prelude hiding (drop, length, product, reverse, sum, zip, (++))
+import Prelude hiding (drop, even, init, length, odd, product, reverse, sum, zip, (++))
 
 main :: IO ()
 main = do
@@ -50,3 +50,35 @@ drop :: Int -> [a] -> [a]
 drop 0 xs = xs
 drop _ [] = []
 drop n (_ : xs) = drop (n - 1) xs
+
+fib :: Int -> Int
+fib 0 = 0
+fib 1 = 1
+fib n = fib (n - 1) + fib (n - 2)
+
+qsort :: Ord a => [a] -> [a]
+qsort [] = []
+qsort (x : xs) = qsort smaller ++ [x] ++ qsort larger
+  where
+    smaller = [a | a <- xs, a < x]
+    larger = [a | a <- xs, a >= x]
+
+even :: Integral a => a -> Bool
+even 0 = True
+even n = odd (n - 1)
+
+odd :: Integral a => a -> Bool
+odd 0 = False
+odd n = even (n - 1)
+
+evens :: Integral a => [a] -> [a]
+evens [] = []
+evens (x : xs) = x : odds xs
+
+odds :: Integral a => [a] -> [a]
+odds [] = []
+odds (x : xs) = evens xs
+
+init :: [a] -> [a]
+init [_] = []
+init (x : xs) = x : init xs
