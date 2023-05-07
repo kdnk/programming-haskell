@@ -18,6 +18,7 @@ main = do
   -- print (decode [1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0])
 
   print (transmit "higher-order functions are easy")
+  print (transmitFake "higher-order functions are easy")
 
   print ()
 
@@ -34,38 +35,39 @@ make8 :: [Bit] -> [Bit]
 make8 bits = take 8 (bits ++ repeat 0)
 
 parity :: [Bit] -> Int
-parity xs = length (filter (\x -> x == 1) xs)
+parity bits = sum bits `mod` 2
 
 parityBit :: [Bit] -> [Bit]
 parityBit [] = [1]
-parityBit xs
-  | odd (parity xs) = 1 : xs
-  | otherwise = 0 : xs
+parityBit bits = parity bits : bits
 
 encode :: String -> [Bit]
-encode = concat . map (make8 . parityBit . int2bin . ord)
+encode = concat . map (parityBit . make8 . int2bin . ord)
 
-chop8 :: [Bit] -> [[Bit]]
-chop8 [] = []
-chop8 bits = take 8 bits : chop8 (drop 8 bits)
+chop9 :: [Bit] -> [[Bit]]
+chop9 [] = []
+chop9 bits = take 9 bits : chop9 (drop 9 bits)
 
 parityCheck :: [Bit] -> [Bit]
 parityCheck [] = []
-parityCheck xs =
-  if head xs == parity (tail xs)
-    then tail xs
+parityCheck bits =
+  if head bits == parity (tail bits)
+    then tail bits
     else error "parity check failed."
 
 decode :: [Bit] -> String
-decode = map (chr . bin2int) . chop8 . parityCheck
+decode = map (chr . bin2int . parityCheck) . chop9
 
 transmit :: String -> String
-transmit = decode . fakeChannel . encode
+transmit = decode . channel . encode
+
+transmitFake :: String -> String
+transmitFake = decode . channelFake . encode
 
 channel :: [Bit] -> [Bit]
 channel = id
 
 -- ex 08
-fakeChannel :: [Bit] -> [Bit]
-fakeChannel = tail
+channelFake :: [Bit] -> [Bit]
+channelFake = tail
 

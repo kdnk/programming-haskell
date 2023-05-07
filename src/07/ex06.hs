@@ -1,6 +1,7 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 
 {-# HLINT ignore "Use const" #-}
+{-# HLINT ignore "Eta reduce" #-}
 import Prelude hiding (iterate, map)
 
 main :: IO ()
